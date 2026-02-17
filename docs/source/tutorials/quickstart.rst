@@ -1,411 +1,117 @@
-==========
-Quickstart
-==========
+from manim import *
+
+class GeometricTransformations(Scene):
+    def construct(self):
+        # ----------- Scene Setup -----------
+        plane = NumberPlane(
+            x_range=[-6, 6, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={"stroke_opacity": 0.4}
+        )
+        self.play(Create(plane))
+        
+        title = Text("Geometric Transformations", font_size=42)
+        subtitle = Text("Translation - Reflection - Rotation - Central Symmetry", font_size=26).next_to(title, DOWN)
+        self.play(Write(title), Write(subtitle))
+        self.wait(2)
+        self.play(FadeOut(title), FadeOut(subtitle))
+
+        # ----------- Triangle -----------
+        triangle = Polygon(
+            [-2, -1, 0],
+            [-1, 1, 0],
+            [0, -1, 0],
+            color=YELLOW
+        )
+        triangle_label = Text("Triangle", font_size=26).next_to(triangle, DOWN)
+        self.play(Create(triangle), Write(triangle_label))
+        self.wait(1)
+
+        # ----------- Translation -----------
+        trans_title = Text("1) Translation", font_size=34).to_edge(UP)
+        trans_formula = MathTex(r"(x,y) \rightarrow (x+3,\ y+2)").next_to(trans_title, DOWN)
+        self.play(Write(trans_title), Write(trans_formula))
+        self.wait(1)
+
+        self.play(triangle.animate.shift(RIGHT*3 + UP*2), run_time=2)
+        self.play(triangle_label.animate.shift(RIGHT*3 + UP*2), run_time=2)
+        self.wait(1)
+
+        self.play(FadeOut(trans_title), FadeOut(trans_formula))
+
+        # ----------- Reflection about y-axis -----------
+        refl_title = Text("2) Reflection about y-axis", font_size=34).to_edge(UP)
+        refl_formula = MathTex(r"(x,y) \rightarrow (-x,\ y)").next_to(refl_title, DOWN)
+        y_axis = Line(plane.c2p(0, -4), plane.c2p(0, 4), color=BLUE)
+
+        self.play(Write(refl_title), Write(refl_formula), Create(y_axis))
+        self.wait(1)
+
+        self.play(triangle.animate.flip(axis=UP).shift(LEFT*6), run_time=2)
+        self.play(triangle_label.animate.shift(LEFT*6), run_time=2)
+        self.wait(1)
+
+        self.play(FadeOut(refl_title), FadeOut(refl_formula), FadeOut(y_axis))
+
+        # ----------- Rotation 90 degrees -----------
+        rot_title = Text("3) Rotation 90° about origin", font_size=34).to_edge(UP)
+        rot_formula = MathTex(r"(x,y) \rightarrow (-y,\ x)").next_to(rot_title, DOWN)
+        origin_dot = Dot(plane.c2p(0, 0), color=RED)
+        origin_label = Text("O", font_size=26).next_to(origin_dot, DOWN)
+
+        self.play(Write(rot_title), Write(rot_formula), FadeIn(origin_dot), Write(origin_label))
+        self.wait(1)
+
+        self.play(Rotate(triangle, angle=PI/2, about_point=plane.c2p(0,0)), run_time=2)
+        self.play(Rotate(triangle_label, angle=PI/2, about_point=plane.c2p(0,0)), run_time=2)
+        self.wait(1)
+
+        self.play(FadeOut(rot_title), FadeOut(rot_formula))
+
+        # ----------- Central Symmetry (180 rotation) -----------
+        cs_title = Text("4) Central Symmetry (180°)", font_size=34).to_edge(UP)
+        cs_formula = MathTex(r"(x,y) \rightarrow (-x,\ -y)").next_to(cs_title, DOWN)
+
+        self.play(Write(cs_title), Write(cs_formula))
+        self.wait(1)
+
+        self.play(Rotate(triangle, angle=PI, about_point=plane.c2p(0,0)), run_time=2)
+        self.play(Rotate(triangle_label, angle=PI, about_point=plane.c2p(0,0)), run_time=2)
+        self.wait(1)
+
+        self.play(FadeOut(cs_title), FadeOut(cs_formula), FadeOut(origin_dot), FadeOut(origin_label))
+
+        # ----------- Congruence / Isometry -----------
+        iso_title = Text("5) Isometry / Congruence", font_size=34).to_edge(UP)
+        iso_text = Text("Translation, Reflection, Rotation keep lengths and angles.", font_size=24).next_to(iso_title, DOWN)
+
+        self.play(Write(iso_title), Write(iso_text))
+        self.wait(2)
+        self.play(FadeOut(iso_title), FadeOut(iso_text))
+
+        # ----------- Linear Transformation -----------
+        lin_title = Text("6) Linear Transformation", font_size=34).to_edge(UP)
+        lin_formula = MathTex(r"(x,y) \rightarrow (2x,\ y)").next_to(lin_title, DOWN)
+
+        self.play(Write(lin_title), Write(lin_formula))
+        self.wait(1)
+
+        # Stretch effect
+        self.play(triangle.animate.stretch(2, 0), run_time=2)
+        self.wait(1)
 
-.. note::
+        warning = Text("⚠ Lengths change → Not always congruent!", font_size=26, color=RED).to_edge(DOWN)
+        self.play(Write(warning))
+        self.wait(2)
 
-  Before proceeding, install Manim and make sure it is running properly by
-  following the steps in :doc:`../installation`. For
-  information on using Manim with Jupyterlab or Jupyter notebook, go to the
-  documentation for the
-  :meth:`IPython magic command <manim.utils.ipython_magic.ManimMagic.manim>`,
-  ``%%manim``.
+        self.play(FadeOut(lin_title), FadeOut(lin_formula), FadeOut(warning))
 
+        # ----------- Summary -----------
+        summary = Text("Summary", font_size=40).to_edge(UP)
+        s1 = Text("✓ Translation, Reflection, Rotation, Central Symmetry = Isometry", font_size=26).next_to(summary, DOWN)
+        s2 = Text("⚠ Linear Transformation may change lengths.", font_size=26).next_to(s1, DOWN)
 
-.. important::
+        self.play(Write(summary), Write(s1), Write(s2))
+        self.wait(3)
 
-  If you installed Manim in the recommended way, using the
-  Python management tool ``uv``, then you either need to make sure the corresponding
-  virtual environment is activated (follow the instructions printed on running ``uv venv``),
-  or you need to remember to prefix the ``manim`` command in the console with ``uv run``;
-  that is, ``uv run manim ...``.
-
-Overview
-********
-
-This quickstart guide will lead you through creating a sample project using Manim: an animation
-engine for precise programmatic animations.
-
-First, you will use a command line
-interface to create a ``Scene``, the class through which Manim generates videos.
-In the ``Scene`` you will animate a circle. Then you will add another ``Scene`` showing
-a square transforming into a circle. This will be your introduction to Manim's animation ability.
-Afterwards, you will position multiple mathematical objects (``Mobject``\s). Finally, you
-will learn the ``.animate`` syntax, a powerful feature that animates the methods you
-use to modify ``Mobject``\s.
-
-
-Starting a new project
-**********************
-
-Start by creating a new folder::
-
-   manim init project my-project --default
-
-The ``my-project`` folder is the root folder for your project. It contains all the files that Manim needs to function,
-as well as any output that your project produces.
-
-
-Animating a circle
-******************
-
-1. Open a text editor, such as Notepad. Open the file ``main.py`` in the ``my-project`` folder.
-   It should look something like this:
-
-   .. code-block:: python
-
-     from manim import *
-
-
-     class CreateCircle(Scene):
-         def construct(self):
-             circle = Circle()  # create a circle
-             circle.set_fill(PINK, opacity=0.5)  # set the color and transparency
-             self.play(Create(circle))  # show the circle on screen
-
-
-2. Open the command line, navigate to your project folder, and execute
-   the following command:
-
-   .. code-block:: bash
-
-     manim -pql main.py CreateCircle
-
-Manim will output rendering information, then create an MP4 file.
-Your default movie player will play the MP4 file, displaying the following animation.
-
-.. manim:: CreateCircle
-   :hide_source:
-
-   class CreateCircle(Scene):
-       def construct(self):
-           circle = Circle()                   # create a circle
-           circle.set_fill(PINK, opacity=0.5)  # set the color and transparency
-           self.play(Create(circle))     # show the circle on screen
-
-If you see an animation of a pink circle being drawn, congratulations!
-You just wrote your first Manim scene from scratch.
-
-If you get an error
-message instead, you do not see a video, or if the video output does not
-look like the preceding animation, it is likely that Manim has not been
-installed correctly. Please refer to our :doc:`FAQ section </faq/index>`
-for help with the most common issues.
-
-
-***********
-Explanation
-***********
-
-Let's go over the script you just executed line by line to see how Manim was
-able to draw the circle.
-
-The first line imports all of the contents of the library:
-
-.. code-block:: python
-
-   from manim import *
-
-This is the recommended way of using Manim, as a single script often uses
-multiple names from the Manim namespace. In your script, you imported and used
-``Scene``, ``Circle``, ``PINK`` and ``Create``.
-
-Now let's look at the next two lines:
-
-.. code-block:: python
-
-   class CreateCircle(Scene):
-       def construct(self):
-           [...]
-
-Most of the time, the code for scripting an animation is entirely contained within
-the :meth:`~.Scene.construct` method of a :class:`.Scene` class.
-Inside :meth:`~.Scene.construct`, you can create objects, display them on screen, and animate them.
-
-The next two lines create a circle and set its color and opacity:
-
-.. code-block:: python
-
-           circle = Circle()  # create a circle
-           circle.set_fill(PINK, opacity=0.5)  # set the color and transparency
-
-Finally, the last line uses the animation :class:`.Create` to display the
-circle on your screen:
-
-.. code-block:: python
-
-           self.play(Create(circle))  # show the circle on screen
-
-.. tip:: All animations must reside within the :meth:`~.Scene.construct` method of a
-         class derived from :class:`.Scene`.  Other code, such as auxiliary
-         or mathematical functions, may reside outside the class.
-
-
-Transforming a square into a circle
-***********************************
-
-With our circle animation complete, let's move on to something a little more complicated.
-
-1. Open ``scene.py``, and add the following code snippet below the ``CreateCircle`` class:
-
-.. code-block:: python
-
-   class SquareToCircle(Scene):
-       def construct(self):
-           circle = Circle()  # create a circle
-           circle.set_fill(PINK, opacity=0.5)  # set color and transparency
-
-           square = Square()  # create a square
-           square.rotate(PI / 4)  # rotate a certain amount
-
-           self.play(Create(square))  # animate the creation of the square
-           self.play(Transform(square, circle))  # interpolate the square into the circle
-           self.play(FadeOut(square))  # fade out animation
-
-2. Render ``SquareToCircle`` by running the following command in the command line:
-
-.. code-block:: bash
-
-   manim -pql scene.py SquareToCircle
-
-The following animation will render:
-
-.. manim:: SquareToCircle2
-   :hide_source:
-
-   class SquareToCircle2(Scene):
-       def construct(self):
-           circle = Circle()  # create a circle
-           circle.set_fill(PINK, opacity=0.5)  # set color and transparency
-
-           square = Square()  # create a square
-           square.rotate(PI / 4)  # rotate a certain amount
-
-           self.play(Create(square))  # animate the creation of the square
-           self.play(Transform(square, circle))  # interpolate the square into the circle
-           self.play(FadeOut(square))  # fade out animation
-
-This example shows one of the primary features of Manim: the ability to
-implement complicated and mathematically intensive animations (such as cleanly
-interpolating between two geometric shapes) with just a few lines of code.
-
-
-Positioning ``Mobject``\s
-*************************
-
-Next, let's go over some basic techniques for positioning ``Mobject``\s.
-
-1. Open ``scene.py``, and add the following code snippet below the ``SquareToCircle`` method:
-
-.. code-block:: python
-
-   class SquareAndCircle(Scene):
-       def construct(self):
-           circle = Circle()  # create a circle
-           circle.set_fill(PINK, opacity=0.5)  # set the color and transparency
-
-           square = Square()  # create a square
-           square.set_fill(BLUE, opacity=0.5)  # set the color and transparency
-
-           square.next_to(circle, RIGHT, buff=0.5)  # set the position
-           self.play(Create(circle), Create(square))  # show the shapes on screen
-
-2. Render ``SquareAndCircle`` by running the following command in the command line:
-
-.. code-block:: bash
-
-   manim -pql scene.py SquareAndCircle
-
-The following animation will render:
-
-.. manim:: SquareAndCircle2
-   :hide_source:
-
-   class SquareAndCircle2(Scene):
-       def construct(self):
-           circle = Circle()  # create a circle
-           circle.set_fill(PINK, opacity=0.5)  # set the color and transparency
-
-           square = Square() # create a square
-           square.set_fill(BLUE, opacity=0.5) # set the color and transparency
-
-           square.next_to(circle, RIGHT, buff=0.5) # set the position
-           self.play(Create(circle), Create(square))  # show the shapes on screen
-
-``next_to`` is a ``Mobject`` method for positioning ``Mobject``\s.
-
-We first specified
-the pink circle as the square's reference point by passing ``circle`` as the method's first argument.
-The second argument is used to specify the direction the ``Mobject`` is placed relative to the reference point.
-In this case, we set the direction to ``RIGHT``, telling Manim to position the square to the right of the circle.
-Finally, ``buff=0.5`` applied a small distance buffer between the two objects.
-
-Try changing ``RIGHT`` to ``LEFT``, ``UP``, or ``DOWN`` instead, and see how that changes the position of the square.
-
-Using positioning methods, you can render a scene with multiple ``Mobject``\s,
-setting their locations in the scene using coordinates or positioning them
-relative to each other.
-
-For more information on ``next_to`` and other positioning methods, check out the
-list of :class:`.Mobject` methods in our reference manual.
-
-
-Using ``.animate`` syntax to animate methods
-********************************************
-
-The final lesson in this tutorial is using ``.animate``, a ``Mobject`` method which
-animates changes you make to a ``Mobject``. When you prepend ``.animate`` to any
-method call that modifies a ``Mobject``, the method becomes an animation which
-can be played using ``self.play``. Let's return to ``SquareToCircle`` to see the
-differences between using methods when creating a ``Mobject``,
-and animating those method calls with ``.animate``.
-
-1. Open ``scene.py``, and add the following code snippet below the ``SquareAndCircle`` class:
-
-.. code-block:: python
-
-   class AnimatedSquareToCircle(Scene):
-       def construct(self):
-           circle = Circle()  # create a circle
-           square = Square()  # create a square
-
-           self.play(Create(square))  # show the square on screen
-           self.play(square.animate.rotate(PI / 4))  # rotate the square
-           self.play(Transform(square, circle))  # transform the square into a circle
-           self.play(
-               square.animate.set_fill(PINK, opacity=0.5)
-           )  # color the circle on screen
-
-2. Render ``AnimatedSquareToCircle`` by running the following command in the command line:
-
-.. code-block:: bash
-
-   manim -pql scene.py AnimatedSquareToCircle
-
-The following animation will render:
-
-.. manim:: AnimatedSquareToCircle2
-   :hide_source:
-
-   class AnimatedSquareToCircle2(Scene):
-       def construct(self):
-           circle = Circle()  # create a circle
-           square = Square()  # create a square
-
-           self.play(Create(square))  # show the square on screen
-           self.play(square.animate.rotate(PI / 4))  # rotate the square
-           self.play(Transform(square, circle))  # transform the square into a circle
-           self.play(square.animate.set_fill(PINK, opacity=0.5))  # color the circle on screen
-
-The first ``self.play`` creates the square. The second animates rotating it 45 degrees.
-The third transforms the square into a circle, and the last colors the circle pink.
-Although the end result is the same as that of ``SquareToCircle``, ``.animate`` shows
-``rotate`` and ``set_fill`` being applied to the ``Mobject`` dynamically, instead of creating them
-with the changes already applied.
-
-Try other methods, like ``flip`` or ``shift``, and see what happens.
-
-3. Open ``scene.py``, and add the following code snippet below the ``AnimatedSquareToCircle`` class:
-
-.. code-block:: python
-
-   class DifferentRotations(Scene):
-       def construct(self):
-           left_square = Square(color=BLUE, fill_opacity=0.7).shift(2 * LEFT)
-           right_square = Square(color=GREEN, fill_opacity=0.7).shift(2 * RIGHT)
-           self.play(
-               left_square.animate.rotate(PI), Rotate(right_square, angle=PI), run_time=2
-           )
-           self.wait()
-
-4. Render ``DifferentRotations`` by running the following command in the command line:
-
-.. code-block:: bash
-
-   manim -pql scene.py DifferentRotations
-
-The following animation will render:
-
-.. manim:: DifferentRotations2
-   :hide_source:
-
-   class DifferentRotations2(Scene):
-       def construct(self):
-           left_square = Square(color=BLUE, fill_opacity=0.7).shift(2*LEFT)
-           right_square = Square(color=GREEN, fill_opacity=0.7).shift(2*RIGHT)
-           self.play(left_square.animate.rotate(PI), Rotate(right_square, angle=PI), run_time=2)
-           self.wait()
-
-This ``Scene`` illustrates the quirks of ``.animate``. When using ``.animate``, Manim
-actually takes a ``Mobject``'s starting state and its ending state and interpolates the two.
-In the ``AnimatedSquareToCircle`` class, you can observe this when the square rotates:
-the corners of the square appear to contract slightly as they move into the positions required
-for the first square to transform into the second one.
-
-In ``DifferentRotations``, the difference between ``.animate``'s interpretation of rotation and the
-``Rotate`` method is far more apparent. The starting and ending states of a ``Mobject`` rotated 180 degrees
-are the same, so ``.animate`` tries to interpolate two identical objects and the result is the left square.
-If you find that your own usage of ``.animate`` is causing similar unwanted behavior, consider
-using conventional animation methods like the right square, which uses ``Rotate``.
-
-
-``Transform`` vs ``ReplacementTransform``
-*****************************************
-The difference between ``Transform`` and ``ReplacementTransform`` is that ``Transform(mob1, mob2)`` transforms the points
-(as well as other attributes like color) of ``mob1`` into the points/attributes of ``mob2``.
-
-``ReplacementTransform(mob1, mob2)`` on the other hand literally replaces ``mob1`` on the scene with ``mob2``.
-
-The use of ``ReplacementTransform`` or ``Transform`` is mostly up to personal preference. They can be used to accomplish the same effect, as shown below.
-
-.. code-block:: python
-
-    class TwoTransforms(Scene):
-        def transform(self):
-            a = Circle()
-            b = Square()
-            c = Triangle()
-            self.play(Transform(a, b))
-            self.play(Transform(a, c))
-            self.play(FadeOut(a))
-
-        def replacement_transform(self):
-            a = Circle()
-            b = Square()
-            c = Triangle()
-            self.play(ReplacementTransform(a, b))
-            self.play(ReplacementTransform(b, c))
-            self.play(FadeOut(c))
-
-        def construct(self):
-            self.transform()
-            self.wait(0.5)  # wait for 0.5 seconds
-            self.replacement_transform()
-
-
-However, in some cases it is more beneficial to use ``Transform``, like when you are transforming several mobjects one after the other.
-The code below avoids having to keep a reference to the last mobject that was transformed.
-
-.. manim:: TransformCycle
-
-    class TransformCycle(Scene):
-        def construct(self):
-            a = Circle()
-            t1 = Square()
-            t2 = Triangle()
-            self.add(a)
-            self.wait()
-            for t in [t1,t2]:
-                self.play(Transform(a,t))
-
-************
-You're done!
-************
-
-With a working installation of Manim and this sample project under your belt,
-you're ready to start creating animations of your own.  To learn
-more about what Manim is doing under the hood, move on to the next tutorial:
-:doc:`output_and_config`.  For an overview of
-Manim's features, as well as its configuration and other settings, check out the
-other :doc:`Tutorials <../tutorials/index>`.  For a list of all available features, refer to the
-:doc:`../reference` page.
+        self.play(FadeOut(summary), FadeOut(s1), FadeOut(s2), FadeOut(triangle), FadeOut(triangle_label), FadeOut(plane))
